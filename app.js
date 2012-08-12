@@ -3,34 +3,26 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , partials = require('express-partials')
-  , http = require('http');
+var express = require('express'),
+	routes = require('./routes'),
+	partials = require('express-partials');
+	
 
-var app = express();
+var app = express.createServer();
 
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
-  app.set('views', __dirname + '/views');
-
-  app.use(partials());
-
-  //app.set('view engine', 'jade');
-  // map .renderFile to ".html" files
-  app.engine('html', require('ejs').renderFile);
-
-  // make ".html" the default
-  app.set('view engine', 'html');
-
-
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+	app.set('views', __dirname + '/views');
+	
+	app.set('view engine', 'jade');
+//	app.engine('.html', require('jade'));
+	
+	app.use(express.favicon());
+	app.use(express.logger('dev'));
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(app.router);
+	app.use(express.static(__dirname + '/public'));
 });
 
 app.configure('development', function(){
@@ -45,10 +37,7 @@ app.put('/api/pubs/:id', routes.api.pub_update);
 app.post('/api/pubs', routes.api.pub_create);
 app.delete('/api/pubs/:id', routes.api.pub_delete);
 
-app.get('/api/pubs/near/:lon/:lat', routes.api.pubs_near)
-app.get('/api/pubs/distances/:lon/:lat', routes.api.pubs_near_with_distances)
+app.get('/api/pubs/near/:lon/:lat', routes.api.pubs_near);
+app.get('/api/pubs/distances/:lon/:lat', routes.api.pubs_near_with_distances);
 
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
-});
+app.listen(3000);

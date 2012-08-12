@@ -6,6 +6,6 @@ exports.api = require('./api/pubs.js')
  */
 
 exports.index = function(req, res){
-  res.render('index', { layout: 'layout.html', title: 'BarHopper' });
+	res.render('index', {title: 'Bar Hopper'});
 };
 
