@@ -1,21 +1,17 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express'),
-	routes = require('./routes'),
-	partials = require('express-partials');
+	routes = require('./routes');
 	
 
-var app = express.createServer();
+var app = express();
 
 
 app.configure(function(){
-	app.set('views', __dirname + '/views');
-	
+	app.set('views', __dirname + '/views');	
 	app.set('view engine', 'jade');
-//	app.engine('.html', require('jade'));
 	
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
