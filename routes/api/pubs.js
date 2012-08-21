@@ -89,7 +89,6 @@ exports.pubs_near = function(req, res){
     var lat = parseFloat(req.params.lat);
 
     var numberOfPubs = 20;
-
     /*
     //Chaining example
     var q = Pub.find({"location" : { "$nearSphere" : [ lon, lat ] } }).limit(numberOfPubs);
@@ -102,13 +101,12 @@ exports.pubs_near = function(req, res){
     });
     */
 
-
-    return Pub.find({"location" : { "$nearSphere" : [ lon, lat ] } },[],{limit: numberOfPubs},function(err,pubs){
+    return Pub.find({location : { $near : [ lon, lat ] }},null,null,function(err,pubs){
         if (!err) {
             console.log("Long:" + req.params.lon + ",Lat:" + req.params.lat);
             return res.send(pubs);
         }
-    });
+    }).limit(numberOfPubs);
 
 
 };
