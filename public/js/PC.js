@@ -105,7 +105,7 @@ PC.core = (function(core, $, undefined){
 		
 		$.ajax({
             type:       'GET',
-            url:        '/api/pubs/near/151.203359/-33.858166/', //Test - get pubs near Lord Nelson
+            url:        '/api/pubs', //Test - get pubs near Lord Nelson
             //url:        '/api/pubs/near/151.187148/-33.879697/',   //Test - get pubs near Ancient Briton
             dataType:   'json',
             async:      false,
@@ -114,7 +114,7 @@ PC.core = (function(core, $, undefined){
 			console.log(data);
                     temp_pubs = data;
                     for (var i = 0; i < temp_pubs.length; i++) {
-                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].obj.location.lat,temp_pubs[i].obj.location.lon);
+                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].location.lat,temp_pubs[i].location.lon);
                         temp_pubs[i].id = temp_pubs[i]._id;
 						
                         pubs.push(temp_pubs[i]);

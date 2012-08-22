@@ -5,16 +5,26 @@
 	mongoose
 	nodemailer 		
 	connect	
+	connect-mongo
  */
 
 var express = require('express'),
 	connect = require('connect'),
 	routes = require('./routes'),
-	api = require('./routes/api');
+	api = require('./routes/api'),
+	MongoStore = require('connect-mongo')(express);
 
 var app = express();		// Create server
 
-var MemoryStore = require('connect').session.MemoryStore;
+var conf = {
+  db: {
+    db: 'barhopper-dev',
+    host: 'pablogil.org',
+    username: 'pablo', // optional
+    password: 'development'
+  },
+  secret: 'Iba yo de peregrina'
+};
 
 // Configure server
 app.configure(function(){
@@ -23,11 +33,11 @@ app.configure(function(){
 	
 	app.use(express.favicon());
 	app.use(express.bodyParser());
-	app.use(express.cookieParser('your secret here'));
+	app.use(express.cookieParser());
 	app.use(express.session({
-		store: new MemoryStore({
-		reapInterval: 60000 * 10
-	  }), secret:'foobar'
+		secret: conf.secret,
+		maxAge: new Date(Date.now() + 3600000),
+		store: new MongoStore(conf.db)
 	}));
 	app.use(express.methodOverride());
 	app.use(app.router);
@@ -62,8 +72,8 @@ app.put('/api/pubs/:id', api.pubAPI.update);
 app.post('/api/pubs', api.pubAPI.create);
 app.del('/api/pubs/:id', api.pubAPI.remove);
 
-app.get('/api/pubs/near/:lon/:lat', api.pubAPI.nearDistance);
-app.get('/api/pubs/distances/:lon/:lat', api.pubAPI.near);
+app.get('/api/pubs/near/:lon/:lat', api.pubAPI.near);
+app.get('/api/pubs/distances/:lon/:lat', api.pubAPI.nearDistance);
 
 
 function requiresLogin(req, res, next){

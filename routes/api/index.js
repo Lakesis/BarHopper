@@ -2,9 +2,22 @@ var mongoose = require('mongoose');
 
 //TODO - Put in model file
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
 
-var Pub = mongoose.model('Pub', new mongoose.Schema({})), //any thing goes schema
+var Pub = mongoose.model('Pub', new mongoose.Schema({
+	name : String,
+	address: String,
+	suburb: String,
+	state: String,
+	postcode: Number,
+	phone: String,
+	url: String,
+	description: String,
+	location:{
+		lon: Number,
+		lat: Number
+	}
+})), //any thing goes schema
 User = mongoose.model('User', new mongoose.Schema({})),
 
 // Users
@@ -32,7 +45,8 @@ userAPI.newUser = function(loginId, password, callback){
 // Pubs
 pubAPI = {};
 
-pubAPI.listAll = function(req, res){ console.log('asdas');
+pubAPI.listAll = function(req, res){
+
 	Pub.find(function(err, pubs) {
 		return res.send(pubs);
 	});
