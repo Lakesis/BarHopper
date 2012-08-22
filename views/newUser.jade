@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	form(method="post", action="/newUser")
+	p	
+		label(for="loginId") Email:
+		input#loginId(name="loginId", type="text")
+	p
+		label(for="password") Password:
+		input#password(name="password", type="password")
+	p
+		input#signIn(type="submit", value="Sign in")

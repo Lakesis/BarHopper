@@ -16,6 +16,19 @@ userAPI.authenticate = function(loginId, password, callback){
 	});
 };
 
+userAPI.newUser = function(loginId, password, callback){
+	var user;
+    user = new User({
+        loginId: loginId,
+        password: password
+    });
+    user.save(function(err) {
+        if (!err) {
+            return console.log("created");
+        }
+    });
+};
+
 // Pubs
 pubAPI = {};
 
