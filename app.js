@@ -1,39 +1,79 @@
 /**
  * Module dependencies.
+	express
+	jade
+	mongoose
+	nodemailer 		
+	connect	
  */
 
 var express = require('express'),
-	routes = require('./routes');
-	
+	connect = require('connect'),
+	routes = require('./routes'),
+	api = require('./routes/api');
 
-var app = express();
+var app = express();		// Create server
 
+var MemoryStore = require('connect').session.MemoryStore;
 
+// Configure server
 app.configure(function(){
 	app.set('views', __dirname + '/views');	
 	app.set('view engine', 'jade');
 	
 	app.use(express.favicon());
-	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
+	app.use(express.cookieParser('your secret here'));
+	app.use(express.session({
+		store: new MemoryStore({
+		reapInterval: 60000 * 10
+	  }), secret:'foobar'
+	}));
 	app.use(express.methodOverride());
 	app.use(app.router);
 	app.use(express.static(__dirname + '/public'));
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler());
+// Environments
+app.configure('development', function() {
+  app.use(express.logger());
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
 });
 
+app.configure('production', function() {
+  app.use(express.logger());
+  app.use(express.errorHandler()); 
+});
+
+// Web
 app.get('/', routes.index);
+app.get('/newCrawl',requiresLogin, routes.wizard);
 
-app.get('/api/pubs', routes.api.pubs);
-app.get('/api/pubs/:id', routes.api.pub_by_id);
-app.put('/api/pubs/:id', routes.api.pub_update);
-app.post('/api/pubs', routes.api.pub_create);
-app.delete('/api/pubs/:id', routes.api.pub_delete);
+// Account
+app.get('/login', routes.login);
+app.get('/logout', routes.logout);
+app.post('/authenticate', routes.authenticate);
 
-app.get('/api/pubs/near/:lon/:lat', routes.api.pubs_near);
-app.get('/api/pubs/distances/:lon/:lat', routes.api.pubs_near_with_distances);
+// API
+// CRUD
+app.get('/api/pubs', api.pubAPI.listAll);
+app.get('/api/pubs/:id', api.pubAPI.findById);
+app.put('/api/pubs/:id', api.pubAPI.update);
+app.post('/api/pubs', api.pubAPI.create);
+app.del('/api/pubs/:id', api.pubAPI.remove);
 
-app.listen(3000);
+app.get('/api/pubs/near/:lon/:lat', api.pubAPI.nearDistance);
+app.get('/api/pubs/distances/:lon/:lat', api.pubAPI.near);
+
+
+function requiresLogin(req, res, next){
+	if(req.session.user){
+		next();
+	}else{
+		res.redirect('/login?redirect='+req.url);
+	}	
+};
+
+if(!module.parent){
+	app.listen(3000);
+}

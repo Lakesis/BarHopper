@@ -1,0 +1,13 @@
+extends layout
+
+block content
+	form(method="post", action="/authenticate")
+		input#redirect(type="hidden", value=redirect)
+	p	
+		label(for="loginId") Login:
+		input#loginId(name="loginId", type="text")
+	p
+		label(for="password") Password:
+		input#password(name="password", type="password")
+	p
+		input#login(type="submit", value="Login")

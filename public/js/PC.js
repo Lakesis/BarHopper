@@ -111,9 +111,10 @@ PC.core = (function(core, $, undefined){
             async:      false,
             data:       {},
             success:function(data) {
+			console.log(data);
                     temp_pubs = data;
                     for (var i = 0; i < temp_pubs.length; i++) {
-                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].location.lat,temp_pubs[i].location.lon);
+                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].obj.location.lat,temp_pubs[i].obj.location.lon);
                         temp_pubs[i].id = temp_pubs[i]._id;
 						
                         pubs.push(temp_pubs[i]);
