@@ -6,6 +6,7 @@
 	nodemailer 		
 	connect	
 	connect-mongo
+	crypto
  */
 
 var express = require('express'),
