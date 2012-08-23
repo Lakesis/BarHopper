@@ -111,7 +111,6 @@ PC.core = (function(core, $, undefined){
             async:      false,
             data:       {},
             success:function(data) {
-			console.log(data);
                     temp_pubs = data;
                     for (var i = 0; i < temp_pubs.length; i++) {
                         temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].location.lat,temp_pubs[i].location.lon);
@@ -133,7 +132,7 @@ PC.core = (function(core, $, undefined){
 			section = $('body').data('section');
 			step = $('body').data('step');
 			
-		//	mapping[section]();
+		if(mapping[section]) mapping[section]();
 			
 		});
 	}();
