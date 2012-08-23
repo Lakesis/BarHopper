@@ -17,6 +17,7 @@ var express = require('express'),
 
 var app = express();		// Create server
 
+// DB session
 var conf = {
   db: {
     db: 'barhopper-dev',
@@ -62,8 +63,10 @@ app.get('/newCrawl',requiresLogin, routes.wizard);
 
 // Account
 app.get('/login', routes.login);
+app.post('/login', routes.authenticate);
 app.get('/logout', routes.logout);
-app.post('/authenticate', routes.authenticate);
+app.get('/newUser', routes.newUser);
+app.post('/newUser', routes.createUser);
 
 // API
 // CRUD

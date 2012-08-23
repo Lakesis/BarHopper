@@ -133,7 +133,7 @@ PC.core = (function(core, $, undefined){
 			section = $('body').data('section');
 			step = $('body').data('step');
 			
-			mapping[section]();
+		//	mapping[section]();
 			
 		});
 	}();

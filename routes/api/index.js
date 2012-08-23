@@ -5,9 +5,12 @@ crypto = require('crypto');
 
 mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
 
+
+// Users
+
 var userSchema = new mongoose.Schema({
 	loginId : { type: String, index: { unique: true } },
-	password : String,
+	encryptedPassword : String,
 	userName : String,
 	salt: String
 });
@@ -19,23 +22,60 @@ userSchema.virtual('id').get(function() {
 userSchema.virtual('password').set(function(password){
     this._password = password;
     this.salt = this.makeSalt();
-    this.hashed_password = this.encryptPassword(password);
+    this.encryptedPassword = this.encryptPassword(password);
 }).get(function() { return this._password; });
 
-userSchema.method('authenticate', function(plainText) {
-	return this.encryptPassword(plainText) === this.hashed_password;
-});
+userSchema.methods.authenticate = function(plainText) {
+	return this.encryptPassword(plainText) === this.encryptedPassword;
+};
 
-userSchema.method('makeSalt', function(plainText) {
+userSchema.methods.makeSalt = function() {
 	return Math.round((new Date().valueOf() * Math.random())) + '';
-});
+};
 
-userSchema.method('encryptPassword', function(password) {
+userSchema.methods.encryptPassword = function(password) {
 	return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-});
+};
+
+mongoose.model('User', userSchema);
+var User = mongoose.model('User'),
+userAPI = {};
+
+userAPI.authenticate = function(loginId, password, callback){
+	User.findOne({loginId : loginId},function(err, user) {
+		if(!err){
+			if(user.authenticate(password)){
+				callback(null, user);
+			} else {
+				callback('User could not be authenticated');
+			}
+		}else{
+			callback(err);
+		}
+	});
+};
+
+userAPI.newUser = function(loginId, password, callback){
+	var user = new User({loginId: loginId, password: password });
+	if(user.password && user.password.length){
+		user.save(function(err) {
+			if (!err) {
+				callback(null, user);
+			}else{
+				callback(err);
+			};
+		});
+	} else {
+		callback("Password is empty");
+	}
+};
+
+exports.userAPI = userAPI;
+
+// Pubs
 
 var Pub = mongoose.model('Pub', new mongoose.Schema({
-	name : String,
+	name : { type: String, index: { unique: true } },
 	address: String,
 	suburb: String,
 	state: String,
@@ -47,34 +87,9 @@ var Pub = mongoose.model('Pub', new mongoose.Schema({
 		lon: Number,
 		lat: Number
 	}
-})), //any thing goes schema
-User = mongoose.model('User', userSchema),
+})), 
 
-// Users
-
-userAPI = {};
-userAPI.authenticate = function(loginId, password, callback){
-	User.find({loginId : loginId},function(err, user) {
-		
-	});
-};
-
-userAPI.newUser = function(loginId, password, callback){
-	
-	var user = new User({
-        loginId: loginId,
-        password: password
-    });
-    user.save(function(err) {
-        if (!err) {
-            return console.log("created");
-        }
-    });
-};
-
-// Pubs
 pubAPI = {};
-
 pubAPI.listAll = function(req, res){
 
 	Pub.find(function(err, pubs) {
