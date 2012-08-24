@@ -42,12 +42,19 @@ app.configure(function(){
 		store: new MongoStore(conf.db)
 	}));
 	app.use(express.methodOverride());
+	
+	// Helper middleware for the views. Apply before routing
+	app.use(function(req, res, next){
+		if (req.session.user){
+			res.locals.user = req.session.user;
+		}else{
+			res.locals.user = null;
+		}
+		next();
+	});
+	app.locals.pretty = true;
 	app.use(app.router);
 	app.use(express.static(__dirname + '/public'));
-	
-	app.use(function(req, res){
-		res.locals.user = req.session.user;
-	});
 });
 
 // Environments

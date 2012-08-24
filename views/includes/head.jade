@@ -25,9 +25,9 @@ body(data-section=section, data-step="one")
 				li 3. Invite some peeps
 		
 		#headNav
-			ul;
-				- if (user)
-					li Welcome, #{user}
+			ul
+				- if (user != null)
+					li Welcome, !{user.loginId}
 				- else
 					li
 						a#loginLink(href="") Login

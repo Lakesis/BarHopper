@@ -26,12 +26,10 @@ exports.newUser = function(req, res){
 };
 
 exports.authenticate = function(req, res){
-console.log(req.body);
 	User.authenticate(req.body.loginId, req.body.password, function(err, user){
 		if(!err){
 			if(user){
 				req.session.user = user;
-				console.log(req.body);
 				res.redirect(req.body.redirect || '/');
 			} else {
 				console.log('Error authenticating user: '+err)
