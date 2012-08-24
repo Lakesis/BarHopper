@@ -18,7 +18,7 @@ exports.login = function(req, res){
 
 exports.logout = function(req, res){
 	delete req.session.user;
-	res.redirect('/login');
+	res.redirect('/');
 };
 
 exports.newUser = function(req, res){

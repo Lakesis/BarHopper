@@ -1,8 +1,187 @@
+/* =============================================================================
+   LESS Mixins
+   ========================================================================== */
+   
+.rounded(@radius: 2px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+  -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; 
+}
+.opacity(@opacity: 0.5) {
+  -moz-opacity: @opacity;
+  -khtml-opacity: @opacity;
+  -webkit-opacity: @opacity;
+  opacity: @opacity;
+}
+.box-shadow(@arguments) {
+  -webkit-box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  box-shadow: @arguments;
+}
+.gradient(@start: #EEE, @stop: #FFF) {
+  background: @start;
+  background: -webkit-gradient(linear,
+                               left bottom,
+                               left top,
+                               color-stop(0, @start),
+                               color-stop(1, @stop));
+  background: -ms-linear-gradient(bottom,
+                                  @start,
+                                  @stop);
+  background: -moz-linear-gradient(center bottom,
+                                   @start 0%,
+                                   @stop 100%);
+}
+.horizontal-gradient (@startColor: #eee, @endColor: white) {
+ 	background-color: @startColor;
+	background-image: -webkit-gradient(linear, left top, right top, from(@startColor), to(@endColor));
+	background-image: -webkit-linear-gradient(left, @startColor, @endColor);
+	background-image: -moz-linear-gradient(left, @startColor, @endColor);
+	background-image: -ms-linear-gradient(left, @startColor, @endColor);
+	background-image: -o-linear-gradient(left, @startColor, @endColor);
+}
 
-html, body {height: 100%; background-color: #2D2D2D;}
-#wrapper {width: 100%; margin: 0 auto; position: relative; height: 100%}
-#header {width: 1020px; background: url(../resources/images/header.jpg) no-repeat; height: 123px; position: absolute; top: 0; left: 0}
-#account {width: 427px; background: url(../resources/images/account.jpg) no-repeat; height: 45px; position: absolute; top: 0; right: 0}
+.pageWrapper(@width: 1024px){
+	margin: 0 auto;
+	width: @width;
+}
+
+/* =============================================================================
+   LESS variables
+   ========================================================================== */
+	/* Color palette */
+	@images: "../resources/images/";
+	@structure: "../resources/images/structure/";
+	@placeholder: "../resources/images/placeholders/";
+	@element: "../resources/images/elements/";
+	@textColorLight: #E5D6CC;
+	@linkColor: #FFCC00;
+	@headerColor: #fff;
+	@borderColor: #555;
+/* =============================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section,
+summary {
+    display: block;
+}
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+audio:not([controls]) {
+    display: none;
+}
+
+[hidden] {
+    display: none;
+}
+
+/* =============================================================================
+   General
+   ========================================================================== */
+html, body {margin: 0; padding: 0; background-color: #2D2D2D; color: @textColorLight}
+   
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+	list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/*
+ * Addresses font sizes and margins set differently in IE6/7.
+ * Addresses font sizes within `section` and `article` in FF4+, Chrome, S5.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 24px;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.75em;
+    margin: 2.33em 0;
+}
+
+a,a:visited, a:hover {text-decoration: none; color: @linkColor}
+
+#mainHeader h2 {color: @textColorLight;}
+
+
+/* =============================================================================
+   Utility 
+   ========================================================================== */
+   
+ /*
+ * Hide from both screenreaders and browsers: h5bp.com/u
+ */
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: "";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+    *zoom: 1;
+}
+.clear {clear: both}
+
+/* =============================================================================
+   Main 
+   ========================================================================== */
+
+
+html, body {height: 100%; }
 
 #mapContainer {height: 83%; width: 82%; position: absolute; top: 123px; left: 0;}
 #sidePanel {height: 80%; width: 270px; position: absolute; top: 123px; right: 300px; background: white; display: none; padding: 15px;
@@ -36,5 +215,22 @@ html, body {height: 100%; background-color: #2D2D2D;}
 			a.deletePub {background: url(../resources/images/close.png) 0 10px no-repeat;}
 			
 		}
+	}
+}
+#wizard #mainHeader h2 {margin-top: 33px;  margin-bottom: 6px; float: none}
+#mainHeader{ border-bottom: #292826 solid 5px; .box-shadow(0 0 15px 0 #000); height: 118px;
+	hgroup {float:left;
+		div {float: left}
+	}
+	h1 {float: left; width: 228px; height: 118px;  margin: 0; background: url("@{element}title_logo.jpg") no-repeat; text-indent: -999em}
+	h2 {margin: 0; float: left; margin: 70px 0 0 25px; text-transform: uppercase}
+	#wizardSteps{ margin-left: 25px; 
+		li {float: left; margin-right: 30px; font-size: 24px;}
+		li.current {color: @headerColor; border-bottom: dashed 2px #715827;}
+	}
+
+	#headNav {float: right; margin: 10px 50px 0 0;
+		li {float: left; padding: 0 10px; border-right: 1px solid @borderColor;}
+		li.last {border-right: none}
 	}
 }

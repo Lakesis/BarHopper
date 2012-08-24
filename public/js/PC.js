@@ -1,6 +1,6 @@
 var PC = {};
 
-PC.core = (function(core, $, undefined){
+PC.core = (function(core, $, mediator, undefined){
 	
 	var section,
 	step
@@ -8,11 +8,7 @@ PC.core = (function(core, $, undefined){
 	
 	
 	var wizardManager = function(){
-	
-	
-		
-		
-	
+
 		//	Main object storing the pubs
 		var pubCrawl = [],
 		// Pub data retrieved from the system via AJAX
@@ -111,11 +107,10 @@ PC.core = (function(core, $, undefined){
             async:      false,
             data:       {},
             success:function(data) {
+			console.log(data);
                     temp_pubs = data;
                     for (var i = 0; i < temp_pubs.length; i++) {
-                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].location.lat,temp_pubs[i].location.lon);
-                        temp_pubs[i].id = temp_pubs[i]._id;
-						
+                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].location.lat,temp_pubs[i].location.lon);						
                         pubs.push(temp_pubs[i]);
                     }
 				launchMap();
@@ -139,9 +134,9 @@ PC.core = (function(core, $, undefined){
 	
 	return core;
 
-})(PC.core || {}, jQuery);
+})(PC.core || {}, jQuery, mediator);
 
-PC.mapManager = (function(mapManager, $, undefined){
+PC.mapManager = (function(mapManager, $, mediator, undefined){
 
 	var map,
 	directionsDisplay,
@@ -275,10 +270,10 @@ PC.mapManager = (function(mapManager, $, undefined){
 	
 	return mapManager;
 
-})(PC.mapManager || {}, jQuery);
+})(PC.mapManager || {}, jQuery, mediator);
 
 
-PC.wizard = (function(wizard, $, undefined){
+PC.wizard = (function(wizard, $, mediator, undefined){
 	
 	var $timeline,
 	$sidePanel
@@ -368,4 +363,4 @@ PC.wizard = (function(wizard, $, undefined){
 
 	return wizard;
 
-})(PC.wizard || {}, jQuery);
+})(PC.wizard || {}, jQuery, mediator);

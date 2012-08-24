@@ -74,7 +74,7 @@ exports.userAPI = userAPI;
 
 // Pubs
 
-var Pub = mongoose.model('Pub', new mongoose.Schema({
+var pubSchema = new mongoose.Schema({
 	name : { type: String, index: { unique: true } },
 	address: String,
 	suburb: String,
@@ -87,7 +87,12 @@ var Pub = mongoose.model('Pub', new mongoose.Schema({
 		lon: Number,
 		lat: Number
 	}
-})), 
+});
+
+pubSchema.virtual('id').get(function(){ return this._id.toString()});
+
+mongoose.model('Pub', pubSchema)
+var Pub = mongoose.model('Pub'), 
 
 pubAPI = {};
 pubAPI.listAll = function(req, res){
