@@ -25,8 +25,8 @@ PC.core = (function(core, $, mediator, undefined){
 			var id = data[0],
 			newPub = true;
 			
-			for(var i=0, l = pubCrawl.length; i<l; i++){
-				if(pubCrawl[i].id === id) newPub = false;  
+			for(index in pubCrawl){
+				if(pubCrawl[index].id === id) newPub = false;  
 			}
 			if (newPub) pubCrawl.push(pubs[id]);
 
@@ -122,12 +122,12 @@ PC.core = (function(core, $, mediator, undefined){
 		var mapping = {
 			wizard : wizardManager
 		};
-	
+			
 		$(document).ready(function(){
 			section = $('body').data('section');
 			step = $('body').data('step');
 			
-		if(mapping[section]) mapping[section]();
+			if(mapping[section]) mapping[section]();
 			
 		});
 	}();
@@ -135,6 +135,74 @@ PC.core = (function(core, $, mediator, undefined){
 	return core;
 
 })(PC.core || {}, jQuery, mediator);
+
+PC.utils = (function(utils, $, undefined){
+
+	// Hash table object implementation
+	utils.HashTable = function(){
+		this.table = {},
+		this.length = 0
+	};
+	utils.HashTable.prototype = {	
+		hasItem : function(key){
+			return this.table.hasOwnProperty(key);
+		},		
+		getItem : function(key) {
+			return this.hasItem(key) ? this.table[key] : undefined;
+		},
+		setItem = function(key, value){
+			if(!this.hasItem(key)) {
+				this.length++;
+			}
+			this.table[key] = value;
+			
+			return this;
+		},
+		remove : function(key){
+			if(this.hasItem(key)){
+				this.length--;
+				delete this.table[key];
+			}
+			return this;
+		},
+		keys :  function(){
+			var keys = [];
+			for (var k in this.table){
+				if(this.hasItem(k)){
+					keys.push(k);
+				}
+			}
+			return keys;
+		},
+		values :  function(){
+			var values = [];
+			for (var k in this.table){
+				if(this.hasItem(k)){
+					values.push(this.table[k]);
+				}
+			}
+			return values;
+		},
+		each : function(fn){
+			for(var k in this.table){
+				if(this.hasItem(k)){
+					fn(k, this.table[k]);
+				}
+			}
+			return this;
+		},
+		reset : function(){
+			this.length = 0;
+			delete this.table; 
+			this.table = {}; 
+			
+			return this;
+		}
+	};
+
+	return utils;
+
+})(PC.utils || {}, jQuery);
 
 PC.mapManager = (function(mapManager, $, mediator, undefined){
 
