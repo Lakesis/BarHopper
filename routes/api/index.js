@@ -87,7 +87,13 @@ var pubSchema = new mongoose.Schema({
 		lon: Number,
 		lat: Number
 	}
-});
+},
+	{
+		toObject: {
+			virtuals: true
+		}
+	}
+);
 
 pubSchema.virtual('id').get(function(){ return this._id.toString()});
 
@@ -98,7 +104,10 @@ pubAPI = {};
 pubAPI.listAll = function(req, res){
 
 	Pub.find(function(err, pubs) {
-		return res.send(pubs);
+		var flatPubs = pubs.map(function(pub){
+			return pub.toObject();
+		});
+		return res.send(JSON.stringify(flatPubs));
 	});
 };
 

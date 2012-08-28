@@ -6,19 +6,16 @@ PC.core = (function(core, $, mediator, undefined){
 	step
 	;
 	
-	
 	var wizardManager = function(){
 
 		//	Main object storing the pubs
 		var pubCrawl = [],
 		// Pub data retrieved from the system via AJAX
-		pubs = [];
+		pubs = new PC.utils.HashTable();
 		
 		mediator.on('mapInitialised', function(){
 			 PC.wizard.init();
 		});		
-		
-		
 		
 		// Pub added to the Pub Crawl
 		mediator.on('addPub', function(data){
@@ -32,7 +29,7 @@ PC.core = (function(core, $, mediator, undefined){
 
 			PC.mapManager.manageMarkers({control: 'select', id: id});
 			PC.mapManager.route({pubCrawl:pubCrawl, travelMode : 'WALKING'});
-		//	PC.wizard.updateTimeline(pubCrawl);
+			PC.wizard.updateTimeline(pubCrawl);
 		});
 		
 		// Pub deleted from the Pub Crawl
@@ -58,62 +55,55 @@ PC.core = (function(core, $, mediator, undefined){
 		
 		// Pub details displayed
 		mediator.on('displayPubDetails', function(data){
-			var id = data[0], 
-			pub = {};
-			for(var i=0, l = pubs.length; i<l; i++){
-				if(pubs[i].id === id) pub = pubs[i];
-			}
-			PC.wizard.displayPubDetails(pub);
+			var id = data[0]; 
+			PC.wizard.displayPubDetails(pubs.getItem(id));
 		});
 		
 		// MAP OPTIONS
 		function launchMap(){
-			if(pubs.length > 0){
-				var map = {
-					element : $('#mapContainer')[0],
-					options : {
-						center: new google.maps.LatLng(-33.859635,151.208701),
-						zoom: 17,
-						panControl: false,
-						streetViewControl: false,
-						zoomControl: true,
-						zoomControlOptions: {
-							style: google.maps.ZoomControlStyle.SMALL
-						},
-						mapTypeControl: true,
-						mapTypeControlOptions: {
-							position: google.maps.ControlPosition.TOP_LEFT
-						},
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					}
-				},
-				directions = {
-					options : {
-						draggable : true,
-						suppressMarkers : true,
-						preserveViewport : true
-					}
+			var map = {
+				element : $('#mapContainer')[0],
+				options : {
+					center: new google.maps.LatLng(-33.859635,151.208701),
+					zoom: 17,
+					panControl: false,
+					streetViewControl: false,
+					zoomControl: true,
+					zoomControlOptions: {
+						style: google.maps.ZoomControlStyle.SMALL
+					},
+					mapTypeControl: true,
+					mapTypeControlOptions: {
+						position: google.maps.ControlPosition.TOP_LEFT
+					},
+					mapTypeId: google.maps.MapTypeId.ROADMAP
 				}
-				
-				PC.mapManager.init({mode:'wizard',map : map, directions : directions, pubs : pubs});
+			},
+			directions = {
+				options : {
+					draggable : true,
+					suppressMarkers : true,
+					preserveViewport : true
+				}
 			}
+			
+			PC.mapManager.init({mode:'wizard',map : map, directions : directions, pubs : pubs});
 		};
 		
 		$.ajax({
             type:       'GET',
             url:        '/api/pubs', //Test - get pubs near Lord Nelson
-            //url:        '/api/pubs/near/151.187148/-33.879697/',   //Test - get pubs near Ancient Briton
             dataType:   'json',
             async:      false,
             data:       {},
             success:function(data) {
-			console.log(data);
-                    temp_pubs = data;
-                    for (var i = 0; i < temp_pubs.length; i++) {
-                        temp_pubs[i].latlng = new google.maps.LatLng(temp_pubs[i].location.lat,temp_pubs[i].location.lon);						
-                        pubs.push(temp_pubs[i]);
-                    }
-				launchMap();
+                var auxPubs = data;
+                for (var i = 0; i < auxPubs.length; i++) {
+                    auxPubs[i].latlng = new google.maps.LatLng(auxPubs[i].location.lat,auxPubs[i].location.lon);						
+                    pubs.setItem(auxPubs[i].id, auxPubs[i]);
+                }
+				
+				if(pubs.len()) launchMap();
             }
         });
 	};
@@ -150,7 +140,7 @@ PC.utils = (function(utils, $, undefined){
 		getItem : function(key) {
 			return this.hasItem(key) ? this.table[key] : undefined;
 		},
-		setItem = function(key, value){
+		setItem : function(key, value){
 			if(!this.hasItem(key)) {
 				this.length++;
 			}
@@ -197,6 +187,9 @@ PC.utils = (function(utils, $, undefined){
 			this.table = {}; 
 			
 			return this;
+		},
+		len : function(){
+			return this.length;
 		}
 	};
 
@@ -215,14 +208,14 @@ PC.mapManager = (function(mapManager, $, mediator, undefined){
 	;
 	
 	var loadBars = function(pubs){
-		for (var i=0, l = pubs.length; i<l; i++){
+		pubs.each(function(key, pub){
 			var marker = new google.maps.Marker({
-				position: pubs[i].latlng,
+				position: pub.latlng,
 				map: map,
 				icon : 'resources/images/pub_marker_unselected.png'
 			});
-			marker.set('id', pubs[i].id);	// marker gets the id of the pub
-			markers[pubs[i].id] = marker;	// gets indexed in the its id
+			marker.set('id', key);	// marker gets the id of the pub
+			markers[key] = marker;	// gets indexed in the its id
 			// Display details
 			google.maps.event.addListener(marker,'click', function() {
 				if (mediator) mediator.publish('displayPubDetails',this.get('id'));
@@ -239,7 +232,7 @@ PC.mapManager = (function(mapManager, $, mediator, undefined){
 			google.maps.event.addListener(marker, 'mouseout', function() {
 				this.setIcon('resources/images/pub_marker_unselected.png');
 			});				
-		}
+		});
 	};
 	
 	mapManager.manageMarkers = function(config){
@@ -269,7 +262,7 @@ PC.mapManager = (function(mapManager, $, mediator, undefined){
 	/*	var $wizardSearchBar = $('<div id="wizardSearch"><input type="text" value="Search" name="wizardSearchBar" id="wizardSearchBar"/></div>');
 		map.controls[google.maps.ControlPosition.TOP_LEFT].push($wizardSearchBar[0]);*/
 
-		if (config.pubs.length > 0){
+		if (config.pubs.len() > 0){
 			loadBars(config.pubs)
 		} else console.log('Pubs object is empty');
 		
@@ -299,9 +292,9 @@ PC.mapManager = (function(mapManager, $, mediator, undefined){
 		sensor = '&sensor='+config.sensor
 		;
 		
-		for (var i=0, l = config.pubCrawl.lenght; i<l; i++){
-			markers += config.pubCrawl[i].latlng + '%7';
-		}
+		config.pubCrawl.each(function(key, pub){
+			markers += pub.latlng + '%7';
+		});
 		
 		return url+center+zoom+size+scale+maptype+markers+path+sensor;
 	};
