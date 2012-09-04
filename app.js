@@ -7,6 +7,8 @@
 	connect	
 	connect-mongo
 	crypto
+	
+	/// Paynode and Mocha
  */
 
 var express = require('express'),

@@ -45,12 +45,12 @@ userAPI.authenticate = function(loginId, password, callback){
 	User.findOne({loginId : loginId},function(err, user) {
 		if(!err){
 			if(user.authenticate(password)){
-				callback(null, user);
+				return callback(null, user);
 			} else {
-				callback('User could not be authenticated');
+				return callback(new Error('User could not be authenticated'));
 			}
 		}else{
-			callback(err);
+			return callback(err);
 		}
 	});
 };
@@ -60,13 +60,13 @@ userAPI.newUser = function(loginId, password, callback){
 	if(user.password && user.password.length){
 		user.save(function(err) {
 			if (!err) {
-				callback(null, user);
+				return callback(null, user);
 			}else{
-				callback(err);
+				return callback(err);
 			};
 		});
 	} else {
-		callback("Password is empty");
+		return callback(new Error('Password is empty'));
 	}
 };
 
