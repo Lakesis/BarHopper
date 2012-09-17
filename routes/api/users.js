@@ -1,8 +1,6 @@
 var mongoose = require('mongoose'),
 crypto = require('crypto');
 
-//TODO - Put in model file
-
 mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
 
 // Users

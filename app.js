@@ -3,12 +3,11 @@
 	express
 	jade
 	mongoose
-	nodemailer 		
 	connect	
 	connect-mongo
 	crypto
 	
-	/// Paynode and Mocha
+	/// Paynode and Mocha nodemailer 
  */
 
 var express = require('express'),
