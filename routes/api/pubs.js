@@ -1,3 +1,4 @@
+<<<<<<< HEAD:routes/api/index.js
 var mongoose = require('mongoose'),
 crypto = require('crypto');
 
@@ -72,6 +73,9 @@ userAPI.newUser = function(loginId, password, callback){
 
 exports.userAPI = userAPI;
 
+=======
+var mongoose = require('mongoose');
+>>>>>>> server side cleaning:routes/api/pubs.js
 // Pubs
 
 var pubSchema = new mongoose.Schema({
@@ -97,12 +101,10 @@ var pubSchema = new mongoose.Schema({
 
 pubSchema.virtual('id').get(function(){ return this._id.toString()});
 
-mongoose.model('Pub', pubSchema)
-var Pub = mongoose.model('Pub'), 
+mongoose.model('Pub', pubSchema);
+var Pub = mongoose.model('Pub'); 
 
-pubAPI = {};
-pubAPI.listAll = function(req, res){
-
+exports.listAll = function(req, res){
 	Pub.find(function(err, pubs) {
 		var flatPubs = pubs.map(function(pub){
 			return pub.toObject();
@@ -111,7 +113,7 @@ pubAPI.listAll = function(req, res){
 	});
 };
 
-pubAPI.findById = function(req, res){
+exports.findById = function(req, res){
     Pub.findById(req.params.id, function(err, pub) {
         if (!err) {
             return res.send(pub);
@@ -119,7 +121,7 @@ pubAPI.findById = function(req, res){
     });
 };
 
-pubAPI.update = function(req, res){
+exports.update = function(req, res){
     Pub.findById(req.params.id, function(err, pub) {
         pub.name = req.body.name;
         pub.address = req.body.address;
@@ -132,7 +134,7 @@ pubAPI.update = function(req, res){
     });
 };
 
-pubAPI.create = function(req, res){
+exports.create = function(req, res){
     var pub;
     pub = new Pub({
         name: req.body.name,
@@ -146,7 +148,7 @@ pubAPI.create = function(req, res){
     return res.send(pub);
 };
 
-pubAPI.remove = function(req, res){
+exports.remove = function(req, res){
     Pub.findById(req.params.id, function(err, pub) {
         pub.remove(function(err) {
             if (!err) {
@@ -157,8 +159,7 @@ pubAPI.remove = function(req, res){
     });
 };
 
-
-pubAPI.nearDistance = function(req, res){
+exports.nearDistance = function(req, res){
 
     var lon = parseFloat(req.params.lon),
 	lat = parseFloat(req.params.lat),
@@ -173,7 +174,7 @@ pubAPI.nearDistance = function(req, res){
     });
 };
 
-pubAPI.near = function(req, res){
+exports.near = function(req, res){
 
     var lon = parseFloat(req.params.lon),
     lat = parseFloat(req.params.lat),
@@ -187,7 +188,6 @@ pubAPI.near = function(req, res){
     }).limit(numberOfPubs);
 };
 
-exports.pubAPI = pubAPI;
 
 
 

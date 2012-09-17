@@ -2,7 +2,7 @@
  * GET home page.
  */
 
-var User = require('./api').userAPI;
+var User = require('./api/users');
  
 exports.index = function(req, res){
 	res.render('index', {section: 'index'});

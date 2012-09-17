@@ -14,11 +14,11 @@
 var express = require('express'),
 	connect = require('connect'),
 	routes = require('./routes'),
-	api = require('./routes/api'),
+	Pub = require('./routes/api/pubs'),
 	MongoStore = require('connect-mongo')(express);
 
-var app = express();		// Create server
-
+	var app = express();		// Create server
+	
 // DB session
 var conf = {
   db: {
@@ -83,14 +83,14 @@ app.post('/newUser', routes.createUser);
 
 // API
 // CRUD
-app.get('/api/pubs', api.pubAPI.listAll);
-app.get('/api/pubs/:id', api.pubAPI.findById);
-app.put('/api/pubs/:id', api.pubAPI.update);
-app.post('/api/pubs', api.pubAPI.create);
-app.del('/api/pubs/:id', api.pubAPI.remove);
+app.get('/api/pubs', Pub.listAll);
+app.get('/api/pubs/:id', Pub.findById);
+app.put('/api/pubs/:id', Pub.update);
+app.post('/api/pubs', Pub.create);
+app.del('/api/pubs/:id', Pub.remove);
 
-app.get('/api/pubs/near/:lon/:lat', api.pubAPI.near);
-app.get('/api/pubs/distances/:lon/:lat', api.pubAPI.nearDistance);
+app.get('/api/pubs/near/:lon/:lat', Pub.near);
+app.get('/api/pubs/distances/:lon/:lat', Pub.nearDistance);
 
 
 function requiresLogin(req, res, next){
