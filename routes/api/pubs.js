@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
-
-mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
+var mongoose = require('mongoose'),
+db = mongoose.createConnection('mongodb://pablo:development@pablogil.org/barhopper-dev');
+//mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
 
 // Pubs
 

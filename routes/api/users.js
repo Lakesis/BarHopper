@@ -1,7 +1,8 @@
 var mongoose = require('mongoose'),
-crypto = require('crypto');
+crypto = require('crypto'),
+db = mongoose.createConnection('mongodb://pablo:development@pablogil.org/barhopper-dev');
 
-mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
+//mongoose.connect('mongodb://pablo:development@pablogil.org/barhopper-dev');
 
 // Users
 
